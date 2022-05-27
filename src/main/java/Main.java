@@ -19,11 +19,13 @@ public class Main {
         // слушать он должен порт 8989
         // отвечать на запросы /{word} -> возвращённое значение метода search(word) в JSON-формате
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+//            System.out.println("Запуск сервера " + PORT + "...");
             while (true) {
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                {
+                try (
+                        Socket clientSocket = serverSocket.accept();
+                        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                ) {
                     System.out.printf("New connection accepted. Port: %d%n", clientSocket.getPort());
 
                     String inpData = in.readLine();
@@ -36,6 +38,8 @@ public class Main {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            System.out.println("Server closed!");
         }
     }
 }
